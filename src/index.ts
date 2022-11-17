@@ -1,20 +1,46 @@
-import { v4 as uuidV4 } from 'uuid';
+import { v4 as uuidV4 } from "uuid"
 
-const list = document.querySelector<HTMLUListElement>('#list');
-const form = document.getElementById('#new-task-form') as HTMLFormElement | null;
-const input = document.querySelector<HTMLInputElement>('#new-task-file');
+type Task = {
+  id: string,
+  title: string,
+  completed: boolean,
+  createdAt: Date
+}
+
+const list = document.querySelector<HTMLUListElement>("#list")
+const form = document.getElementById(
+  "new-task-form"
+) as HTMLFormElement | null
+const input = document.querySelector<HTMLInputElement>("#new-task-file")
+
+const tasks: Task[] = []
 
 form?.addEventListener("submit", e => {
-  e.preventDefault();
+  e.preventDefault()
 
-  if (input?.value == "" || input?.value == null ) return
+  if (input?.value == "" || input?.value == null) return
 
-  const task = {
-    id: ,
-    title: ,
+  const newTask: Task = {
+    id: uuidV4(),
+    title: input.value,
     completed: false,
-    createdAt: new Date()
+    createdAt: new Date(),
   }
-  
-  input.value
+  tasks.push(newTask)
+
+  addListItem(newTask);
 })
+
+function addListItem(task: Task) {
+  const item = document.createElement('li')
+  const label = document.createElement('label')
+  const checkbox = document.createElement('input')
+  checkbox.addEventListener("change", () => {
+    task.completed = checkbox.checked
+  })
+  checkbox.type = 'checkbox'
+  checkbox.checked = task.completed
+  label.append(checkbox, task.title)
+  item.append(label)
+  list?.append(item)
+}
