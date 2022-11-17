@@ -13,7 +13,8 @@ const form = document.getElementById(
 ) as HTMLFormElement | null
 const input = document.querySelector<HTMLInputElement>("#new-task-file")
 
-const tasks: Task[] = []
+const tasks: Task[] = loadTasks()
+tasks.forEach(addListItem)
 
 form?.addEventListener("submit", e => {
   e.preventDefault()
@@ -37,10 +38,22 @@ function addListItem(task: Task) {
   const checkbox = document.createElement('input')
   checkbox.addEventListener("change", () => {
     task.completed = checkbox.checked
+    console.log(tasks)
+    saveTasks()
   })
   checkbox.type = 'checkbox'
   checkbox.checked = task.completed
   label.append(checkbox, task.title)
   item.append(label)
   list?.append(item)
+}
+
+function saveTasks() {
+  localStorage.setItem('TASKS', JSON.stringify(tasks))
+}
+
+function loadTasks(): Task[] {
+  const taskJSON = localStorage.getItem("TASKS")
+  if (taskJSON == null) return []
+  return JSON.parse(taskJSON)
 }
